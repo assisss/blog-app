@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
@@ -12,11 +12,24 @@ export default function PostForm({ post }) {
             slug: post?.$id || "",
             content: post?.content || "",
             status: post?.status || "active",
+            date: post?.date || "",
+            time: post?.time || "",
         },
     });
 
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
+
+    useEffect(() => {
+        if (!post) {
+            const currentDateTime = new Date();
+            const date = currentDateTime.toLocaleDateString();
+            const time = currentDateTime.toLocaleTimeString();
+
+            setValue("date", date);
+            setValue("time", time);
+        }
+    }, [setValue, post]);
 
     const submit = async (data) => {
         if (post) {
@@ -60,7 +73,7 @@ export default function PostForm({ post }) {
         return "";
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const subscription = watch((value, { name }) => {
             if (name === "title") {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
@@ -97,20 +110,20 @@ export default function PostForm({ post }) {
                     labelClassName="text-gray-400"
                     {...register("author", { required: true })}
                 />
-                    {/* <Input
+                <Input
                     label="Publish Date"
-                    placeholder="12/03/2024"
                     className="mb-4 text-black"
                     labelClassName="text-gray-400"
                     {...register("date", { required: true })}
-                /> */}
-                    {/* <Input
+                    readOnly
+                />
+                <Input
                     label="Time in IST"
-                    placeholder="12:00 pm"
                     className="mb-4 text-black"
                     labelClassName="text-gray-400"
                     {...register("time", { required: true })}
-                /> */}
+                    readOnly
+                />
                 <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
             </div>
             <div className="w-full md:w-1/3 px-2 mt-4 md:mt-0">
@@ -134,10 +147,9 @@ export default function PostForm({ post }) {
                 <Select
                     options={["Active", "Inactive"]}
                     label="Status"
-                    defaultValue="dwdwad"
+                    defaultValue={post?.status || "active"}
                     placeholder="Status"
-                    
-                    className="mb-4 text-black  rounded-lg py-2 px-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="mb-4 text-black rounded-lg py-2 px-3 outline-none focus:ring-2 focus:ring-indigo-500"
                     labelClassName="text-gray-400"
                     {...register("status", { required: true })}
                 />
