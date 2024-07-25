@@ -97,20 +97,20 @@ export default function PostForm({ post }) {
                     labelClassName="text-gray-400"
                     {...register("author", { required: true })}
                 />
-                    <Input
+                    {/* <Input
                     label="Publish Date"
                     placeholder="12/03/2024"
                     className="mb-4 text-black"
                     labelClassName="text-gray-400"
                     {...register("date", { required: true })}
-                />
-                    <Input
+                /> */}
+                    {/* <Input
                     label="Time in IST"
                     placeholder="12:00 pm"
                     className="mb-4 text-black"
                     labelClassName="text-gray-400"
                     {...register("time", { required: true })}
-                />
+                /> */}
                 <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
             </div>
             <div className="w-full md:w-1/3 px-2 mt-4 md:mt-0">

@@ -7,7 +7,7 @@ import FeaturesPage from "../componets/Features";
 import { useSelector } from "react-redux";
 function Home() {
     const userData=useSelector((status)=>status.auth.userData);
-    const name=userData?userData.name:null;
+    const name=userData?userData.name?userData.name:null:null;
 
     return (
         <div className="bg-gray-900 min-h-screen text-white">
@@ -16,7 +16,7 @@ function Home() {
                 <Container>
                     <div className="max-w-3xl mx-auto text-center">
                     <div className="text-4xl font-bold mb-6 animate-fade-in">
-    Welcome <span className="text-[#088F8F]">{userData.name}</span>
+    Welcome <span className="text-[#088F8F]">{name}</span>
 </div>
 
 
