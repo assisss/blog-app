@@ -90,14 +90,14 @@ export default function PostForm({ post }) {
                     label="Title :"
                     placeholder="Title"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     {...register("title", { required: true })}
                 />
                 <Input
                     label="Slug :"
                     placeholder="Slug"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
@@ -107,20 +107,21 @@ export default function PostForm({ post }) {
                     label="Author Name"
                     placeholder="Author Name"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     {...register("author", { required: true })}
                 />
                 <Input
                     label="Publish Date"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
+                    
                     {...register("date", { required: true })}
                     readOnly
                 />
                 <Input
                     label="Time in IST"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     {...register("time", { required: true })}
                     readOnly
                 />
@@ -131,7 +132,7 @@ export default function PostForm({ post }) {
                     label="Featured Image :"
                     type="file"
                     className="mb-4 text-black"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
@@ -150,7 +151,7 @@ export default function PostForm({ post }) {
                     defaultValue={post?.status || "active"}
                     placeholder="Status"
                     className="mb-4 text-black rounded-lg py-2 px-3 outline-none focus:ring-2 focus:ring-indigo-500"
-                    labelClassName="text-gray-400"
+                    labelClassName="text-black"
                     {...register("status", { required: true })}
                 />
                 <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
