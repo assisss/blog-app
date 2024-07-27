@@ -5,15 +5,18 @@ import authService from '../appwrite/auth';
 import { login as authLogin } from "../store/authSlice";
 import { Button, Input, Logo } from './index';
 import { useForm } from 'react-hook-form';
+ 
 
 const SignUp = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false); // Add loading state
 
     const createAccount = async (data) => {
         setError("");
+        setLoading(true); // Set loading state to true
         try {
             const userData = await authService.createAccount(data);
             if (userData) {
@@ -23,6 +26,8 @@ const SignUp = () => {
             }
         } catch (error) {
             setError(error.message);
+        } finally {
+            setLoading(false); // Set loading state to false
         }
     }
 
@@ -40,6 +45,11 @@ const SignUp = () => {
                     </Link>
                 </p>
                 {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+                {loading && (
+                    <div className="flex justify-center mt-4">
+                        <div className="loader"></div> {/* Add your loading spinner here */}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit(createAccount)} className="mt-8 space-y-6">
                     <div className="rounded-md shadow-sm space-y-4">
                         <Input
@@ -73,8 +83,9 @@ const SignUp = () => {
                         <Button
                             type="submit"
                             className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full"
+                            disabled={loading} // Disable the button while loading
                         >
-                            Create Account
+                            {loading ? "Creating Account..." : "Create Account"} 
                         </Button>
                     </div>
                 </form>

@@ -11,9 +11,13 @@ const Login = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
 
     const login = async (data) => {
+
         setError("");
+        setLoading(true);
         try {
             const session = await authService.login(data);
             if (session) {
@@ -24,6 +28,7 @@ const Login = () => {
         } catch (error) {
             setError(error.message);
         }
+        setLoading(false);
     }
 
     return (
@@ -40,6 +45,11 @@ const Login = () => {
                     </Link>
                 </p>
                 {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+                {loading && (
+                    <div className="flex justify-center mt-4">
+                        <div className="loader"></div> {/* Add your loading spinner here */}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit(login)} className="mt-8 space-y-6">
                     <Input
                         label="Email"
@@ -67,7 +77,7 @@ const Login = () => {
                             type="submit"
                             className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Login
+                             {loading ? "Logging in ..." : "Login Account"} 
                         </Button>
                     </div>
                 </form>

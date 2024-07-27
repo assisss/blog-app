@@ -83,6 +83,13 @@ export default function PostForm({ post }) {
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
 
+    useEffect(() => {
+        // Ensure default value for status is set
+        if (post) {
+            setValue("status", post.status || "active");
+        }
+    }, [post, setValue]);
+
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-wrap bg-gradient-to-br from-[#02AABD] to-[#00CDAC] p-6 rounded-lg">
             <div className="w-full md:w-2/3 px-2">

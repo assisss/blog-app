@@ -3,18 +3,23 @@ import { Container, PostCard } from '../componets'; // Ensure the path is correc
 import appwriteService from '../appwrite/config';
 import { useSelector } from 'react-redux';
 import { Query } from 'appwrite';
+import { FaSpinner } from 'react-icons/fa'; // Importing a spinner icon
 
 function AllPosts() {
     const [posts, setPosts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchType, setSearchType] = useState('title');
+    const [loading, setLoading] = useState(true); // Loading state
     const userdata = useSelector((state) => state.auth.userData);
 
     useEffect(() => {
         appwriteService.getPosts().then((posts) => {
-           if(posts)
+            if (posts) {
                 setPosts(posts.documents);
-            
+            }
+            setLoading(false); // Set loading to false when posts are fetched
+        }).catch(() => {
+            setLoading(false); // Ensure loading is set to false in case of an error
         });
     }, []);
 
@@ -51,20 +56,26 @@ function AllPosts() {
                         <option value="date">Date</option>
                     </select>
                 </div>
-                <div className='flex flex-wrap -m-2'>
-                    {filteredPosts.map((post) => {
-                        // Conditionally render PostCard only if post.userId matches userData.$id
-                        if (post.userId === userdata.$id) {
-                            return (
-                                <div key={post.$id} className='p-2 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
-                                    <PostCard {...post} />
-                                </div>
-                            );
-                        } else {
-                            return null; // Or handle a different scenario if needed
-                        }
-                    })}
-                </div>
+                {loading ? (
+                    <div className='flex justify-center items-center h-screen'>
+                        <FaSpinner className="animate-spin text-white text-3xl" />
+                    </div>
+                ) : (
+                    <div className='flex flex-wrap -m-2'>
+                        {filteredPosts.map((post) => {
+                            // Conditionally render PostCard only if post.userId matches userData.$id
+                            if (post.userId === userdata.$id) {
+                                return (
+                                    <div key={post.$id} className='p-2 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
+                                        <PostCard {...post} />
+                                    </div>
+                                );
+                            } else {
+                                return null; // Or handle a different scenario if needed
+                            }
+                        })}
+                    </div>
+                )}
             </Container>
         </div>
     );
