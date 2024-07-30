@@ -2,24 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Container, PostCard } from '../componets'; // Ensure the path is correct
 import appwriteService from '../appwrite/config';
 import { useSelector } from 'react-redux';
-import { Query } from 'appwrite';
 import { FaSpinner } from 'react-icons/fa'; // Importing a spinner icon
 
 function AllPosts() {
     const [posts, setPosts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchType, setSearchType] = useState('title');
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true);
     const userdata = useSelector((state) => state.auth.userData);
 
     useEffect(() => {
-        appwriteService.getPosts().then((posts) => {
-            if (posts) {
-                setPosts(posts.documents);
+        appwriteService.getPosts().then((response) => {
+            console.log('Fetched posts:', response.documents); // Debugging log
+            if (response.documents) {
+                setPosts(response.documents);
             }
-            setLoading(false); // Set loading to false when posts are fetched
-        }).catch(() => {
-            setLoading(false); // Ensure loading is set to false in case of an error
+            setLoading(false);
+        }).catch((error) => {
+            console.error('Error fetching posts:', error); // Debugging log
+            setLoading(false);
         });
     }, []);
 
@@ -27,11 +28,12 @@ function AllPosts() {
         if (searchType === 'title') {
             return post.title.toLowerCase().includes(searchQuery.toLowerCase());
         } else if (searchType === 'date') {
-            // Assuming date is a string in 'YYYY-MM-DD' format
             return post.date.includes(searchQuery);
         }
         return false;
     });
+
+    const userPosts = filteredPosts.filter(post => post.userId === userdata.$id);
 
     return (
         <div className='w-full min-h-screen py-8 bg-gradient-to-br from-[#02AABD] to-[#00CDAC]'>
@@ -62,18 +64,17 @@ function AllPosts() {
                     </div>
                 ) : (
                     <div className='flex flex-wrap -m-2'>
-                        {filteredPosts.map((post) => {
-                            // Conditionally render PostCard only if post.userId matches userData.$id
-                            if (post.userId === userdata.$id) {
-                                return (
-                                    <div key={post.$id} className='p-2 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
-                                        <PostCard {...post} />
-                                    </div>
-                                );
-                            } else {
-                                return null; // Or handle a different scenario if needed
-                            }
-                        })}
+                        {userPosts.length === 0 ? (
+                            <div className="text-center text-black w-full text-2xl m-3px">
+                                No posts found.
+                            </div>
+                        ) : (
+                            userPosts.map((post) => (
+                                <div key={post.$id} className='p-2 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
+                                    <PostCard {...post} />
+                                </div>
+                            ))
+                        )}
                     </div>
                 )}
             </Container>
